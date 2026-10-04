@@ -35,6 +35,7 @@ that everything that should be joined is joined and nothing else is.
 - 2026-10-04: Battery and ESP32 use connectors; motors and MPU-6050 are loose wires to pads; the rest is soldered in (user's choice).
 - 2026-10-04: The buzzer, its transistor Q1 and base resistor R4 are dropped from the board (user's change to the schematic). ESP.D27 is unused.
 - 2026-10-04: Motors and MPU-6050 are drawn as off-board connectors beside the board with coloured wires to their pads (pin 8 red, pin 7 black). Ratsnest is off by default. Resistors are at least 4 holes long, the ceramic at least 2, the electrolytic fixed on a diagonal.
+- 2026-10-04: Connector cables are soldered on the solder side; jumper wires and components are on the component side. Each view fades the far side (user's choice).
 - 2026-10-04: State is a JSON file with a `version` and a forward-only migration list.
 
 ## Current state
@@ -50,4 +51,3 @@ Next: the user verifies the nets (milestone 4), then plans the layout (milestone
 - Motor cable colours after red and black are a guess (yellow, green, blue, white, orange, brown). The user should correct `wires` in `netlist.json`.
 - Is the component side the silkscreen side? The page assumes so; `F` flips the view either way.
 - Are the two side rails isolated from each other and from the edge pads? Assumed yes; check with a multimeter.
-- Does the user want wires on the component side to be drawn differently from wires on the solder side? Not modelled yet.

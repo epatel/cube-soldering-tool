@@ -19,7 +19,7 @@ let state = null, netlist = null, check = null, pinNet = {}, ws = null;
 let drag = null, solder = null, wire = null;
 const ui = { view: localStorage.getItem('view') || 'bottom', tool: 'select', color: WIRE_COLORS[0],
   net: null, link: null, part: null, rats: false, hover: null,
-  zoom: Number(localStorage.getItem('zoom')) || 1 };
+  zoom: Number(localStorage.getItem('zoom')) || 1, fade: localStorage.getItem('fade') !== 'off' };
 
 const el = (tag, attrs = {}, parent, text) => {
   const e = document.createElementNS(NS, tag);
@@ -159,19 +159,33 @@ function drawTwoPin(g, def, a, b, stroke) {
 function drawConn(g, id, def, pins) {
   // JSON object keys that look like integers come back sorted, so order the pins by footprint instead
   const names = Object.keys(def.pins).sort((a, b) => def.pins[a][1] - def.pins[b][1] || def.pins[a][0] - def.pins[b][0]);
-  const x = gx(def.dock[0]), top = def.dock[1] * U, pitch = 0.9 * U;
-  const out = x < gx((COLS + 1) / 2) ? -1 : 1;
-  el('rect', { x: x - 0.5 * U, y: top - 0.55 * U, width: U, height: (names.length - 1) * pitch + 1.1 * U, rx: 4, class: 'conn-body' }, g);
-  el('text', { x, y: top - 1.0 * U, class: 'part-label' }, g, def.label);
+  const x = gx(def.dock[0]), top = def.dock[1] * U, pitch = 0.9 * U, n = names.length;
+  const out = x < gx((COLS + 1) / 2) ? -1 : 1, inw = -out;
+  g.setAttribute('class', 'body conn');
+  // The wires run as one cable to a tie just off the board edge, then fan out to their pads.
+  // Inside the tie they are stacked by where they end up, so the fan-out over the board does not cross.
+  const tx = x + inw * 1.25 * U, ty = top + ((n - 1) * pitch) / 2, gap = 0.13 * U;
+  const lands = names.map((pn) => pos(pins[pn]));
+  const slot = [];
+  names.map((_, i) => i)
+    .sort((a, b) => lands[a][1] - lands[b][1] || inw * (lands[a][0] - lands[b][0]))
+    .forEach((i, k) => { slot[i] = ty + (k - (n - 1) / 2) * gap; });
   names.forEach((pn, i) => {
-    const y = top + i * pitch, col = def.wires[i] || '#999';
-    const [nx, ny] = pos(pins[pn]);
-    const d = `M ${x} ${y} C ${(x + nx) / 2} ${y}, ${(x + nx) / 2} ${ny}, ${nx} ${ny}`;
+    const y = top + i * pitch, col = def.wires[i] || '#999', sy = slot[i];
+    const [nx, ny] = lands[i];
+    const reach = Math.max(1.2 * U, Math.abs(nx - tx) * 0.45);
+    const d = `M ${x} ${y} C ${x + inw * 0.7 * U} ${y}, ${tx - inw * 0.6 * U} ${sy}, ${tx} ${sy} ` +
+      `C ${tx + inw * reach} ${sy}, ${nx - inw * reach * 0.6} ${ny}, ${nx} ${ny}`;
     el('path', { d, class: 'conn-case' }, g);
     el('path', { d, class: 'conn-wire', stroke: col }, g);
-    el('circle', { cx: x, cy: y, r: 0.3 * U, fill: col, class: 'land' }, g);
-    el('circle', { cx: nx, cy: ny, r: 0.27 * U, fill: col, class: 'land' }, g);
-    const net = pinNet[`${id}.${pn}`];
+    el('circle', { cx: nx, cy: ny, r: 0.22 * U, fill: col, class: 'land' }, g);
+  });
+  el('rect', { x: tx - 0.13 * U, y: ty - (n * gap) / 2 - 0.08 * U, width: 0.26 * U, height: n * gap + 0.16 * U, rx: 2, class: 'tie' }, g);
+  el('rect', { x: x - 0.5 * U, y: top - 0.55 * U, width: U, height: (n - 1) * pitch + 1.1 * U, rx: 4, class: 'conn-body hit' }, g);
+  el('text', { x, y: top - 1.0 * U, class: 'part-label' }, g, def.label);
+  names.forEach((pn, i) => {
+    const y = top + i * pitch, net = pinNet[`${id}.${pn}`];
+    el('circle', { cx: x, cy: y, r: 0.3 * U, fill: def.wires[i] || '#999', class: 'land hit' }, g);
     el('text', { x: x + out * 0.7 * U, y, class: 'pin-label', 'text-anchor': out < 0 ? 'end' : 'start' }, g, net && net !== pn ? `${pn} ${net}` : pn);
   });
 }
@@ -342,6 +356,10 @@ function renderChrome() {
   for (const b of document.querySelectorAll('#colors button')) b.classList.toggle('on', b.dataset.color === ui.color);
   $('#flip').textContent = ui.view === 'bottom' ? 'View: solder side' : 'View: component side';
   svg.classList.toggle('erasing', ui.tool === 'erase');
+  svg.classList.toggle('view-bottom', ui.view === 'bottom');
+  svg.classList.toggle('view-top', ui.view !== 'bottom');
+  svg.classList.toggle('fade', ui.fade);
+  $('#fade').checked = ui.fade;
   setStatus();
 }
 
@@ -540,6 +558,7 @@ $('#flip').onclick = flipView;
 $('#zoomin').onclick = () => setZoom(ui.zoom * 1.25);
 $('#zoomout').onclick = () => setZoom(ui.zoom / 1.25);
 $('#rats').onchange = (e) => { ui.rats = e.target.checked; render(); };
+$('#fade').onchange = (e) => { ui.fade = e.target.checked; localStorage.setItem('fade', ui.fade ? 'on' : 'off'); renderChrome(); };
 $('#schem').onclick = () => { $('#schematic').hidden = !$('#schematic').hidden; };
 $('#undo').onclick = () => send({ op: 'undo' });
 $('#redo').onclick = () => send({ op: 'redo' });

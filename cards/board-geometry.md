@@ -31,6 +31,16 @@ The page defaults to the solder side seen from below, which mirrors left and rig
 drawn on the left. Only `pos()` and `nodeAt()` in `static/app.js` know about the mirror
 (`x -> 19 - x`). State, ops and the check never see mirrored coordinates. `F` flips the view.
 
+Each view fades what is on the far side of the board (CSS on `svg.fade.view-bottom` / `svg.fade.view-top`).
+The "Fade far side" checkbox turns this off so both sides show at full strength:
+
+| Lives on | Things | Faded in |
+|----------|--------|----------|
+| Component side | part bodies, jumper wires added with the Wire tool | solder-side view |
+| Solder side | solder paths, the cables from the off-board connectors | component-side view |
+
+Pads, pin rings and labels are never faded. Faded things can still be clicked and edited.
+
 ## Assumptions that are not verified
 
 - Components sit on the silkscreen side, solder goes on the plain side.
