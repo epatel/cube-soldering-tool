@@ -1,0 +1,73 @@
+{
+  "notes": [
+    "Transcribed from pics/schematic.png. Verify each net in the UI before trusting the check.",
+    "Coordinates are [column, row] seen from the COMPONENT side: column 1-18, row 1-24 (A-X).",
+    "Row 0 / row 25 are the top / bottom edge pads (columns 2-17). Column 0 / 19 are the side rails.",
+    "kind conn = an off-board connector drawn beside the board at 'dock'; 'wires' are its wire colours in pin order. Edit them to match your cable.",
+    "min_len = shortest allowed distance between a two-pin part's pins, in holes. rigid parts keep their footprint shape (any 90 degree rotation).",
+    "The buzzer, its transistor Q1 and base resistor R4 from the schematic are left out on purpose. ESP.D27 is unused.",
+    "R2.1 sits on VSENSE by circuit logic (voltage divider); the short wire stub in the picture is hard to read."
+  ],
+  "parts": {
+    "ESP": {
+      "label": "ESP32", "kind": "esp", "rigid": true, "color": "#8b93a7", "at": [4, 5],
+      "pins": {
+        "EN": [0, 0], "VP": [0, 1], "VN": [0, 2], "D34": [0, 3], "D35": [0, 4],
+        "D32": [0, 5], "D33": [0, 6], "D25": [0, 7], "D26": [0, 8], "D27": [0, 9],
+        "D14": [0, 10], "D12": [0, 11], "D13": [0, 12], "GND": [0, 13], "VIN": [0, 14],
+        "D23": [10, 0], "D22": [10, 1], "TX0": [10, 2], "RX0": [10, 3], "D21": [10, 4],
+        "D19": [10, 5], "D18": [10, 6], "D5": [10, 7], "TX2": [10, 8], "RX2": [10, 9],
+        "D4": [10, 10], "D2": [10, 11], "D15": [10, 12], "GND2": [10, 13], "3V3": [10, 14]
+      }
+    },
+    "BAT": { "label": "BAT", "kind": "inline", "rigid": true, "color": "#e8e8e8", "at": [1, 1],
+             "pins": { "+": [0, 0], "-": [1, 0] } },
+    "IC1": { "label": "IC1 78xx", "kind": "inline", "rigid": true, "color": "#9aa3b2", "at": [4, 2],
+             "pins": { "IN": [0, 0], "GND": [1, 0], "OUT": [2, 0] } },
+    "C3":  { "label": "C3 100µF", "kind": "elec", "rigid": true, "color": "#3b3470", "at": [8, 2],
+             "pins": { "-": [0, 0], "+": [1, 1] } },
+    "R3":  { "label": "R3 33k", "kind": "resistor", "rigid": false, "color": "#d8b27a", "at": [2, 5], "min_len": 4,
+             "bands": ["#f08c3a", "#f08c3a", "#f08c3a", "#c9a227"],
+             "pins": { "1": [0, 0], "2": [0, 4] } },
+    "R2":  { "label": "R2 10k", "kind": "resistor", "rigid": false, "color": "#d8b27a", "at": [2, 11], "min_len": 4,
+             "bands": ["#8b5a2b", "#1a1a1a", "#f08c3a", "#c9a227"],
+             "pins": { "1": [0, 0], "2": [0, 4] } },
+    "C2":  { "label": "C2 100nF", "kind": "ceramic", "rigid": false, "color": "#c98a2b", "at": [3, 17], "min_len": 2,
+             "pins": { "1": [0, 0], "2": [0, 2] } },
+    "MPU": { "label": "MPU-6050", "kind": "conn", "rigid": false, "color": "#2f6fd0", "at": [18, 14], "dock": [21.6, 14],
+             "wires": ["#e5484d", "#2b2f36", "#f2c94c", "#3fb950"],
+             "pins": { "VCC": [0, 0], "GND": [0, 1], "SCL": [0, 2], "SDA": [0, 3] } },
+    "M1":  { "label": "Motor 1", "kind": "conn", "rigid": false, "color": "#2e9e5b", "at": [1, 3], "dock": [-2.6, 2],
+             "wires": ["#e5484d", "#2b2f36", "#f2c94c", "#3fb950", "#4c8dff", "#f5f5f5", "#f08c3a", "#8b5a2b"],
+             "pins": { "8": [0, 0], "7": [0, 1], "6": [0, 2], "5": [0, 3], "4": [0, 4], "3": [0, 5], "2": [0, 6], "1": [0, 7] } },
+    "M2":  { "label": "Motor 2", "kind": "conn", "rigid": false, "color": "#2e9e5b", "at": [1, 12], "dock": [-2.6, 13],
+             "wires": ["#e5484d", "#2b2f36", "#f2c94c", "#3fb950", "#4c8dff", "#f5f5f5", "#f08c3a", "#8b5a2b"],
+             "pins": { "8": [0, 0], "7": [0, 1], "6": [0, 2], "5": [0, 3], "4": [0, 4], "3": [0, 5], "2": [0, 6], "1": [0, 7] } },
+    "M3":  { "label": "Motor 3", "kind": "conn", "rigid": false, "color": "#2e9e5b", "at": [18, 3], "dock": [21.6, 2],
+             "wires": ["#e5484d", "#2b2f36", "#f2c94c", "#3fb950", "#4c8dff", "#f5f5f5", "#f08c3a", "#8b5a2b"],
+             "pins": { "8": [0, 0], "7": [0, 1], "6": [0, 2], "5": [0, 3], "4": [0, 4], "3": [0, 5], "2": [0, 6], "1": [0, 7] } }
+  },
+  "internal": [["ESP.GND", "ESP.GND2"]],
+  "nets": {
+    "VBAT":     ["BAT.+", "IC1.IN", "R3.1", "M1.8", "M2.8", "M3.8"],
+    "GND":      ["BAT.-", "IC1.GND", "C3.-", "C2.2", "R2.2", "MPU.GND", "ESP.GND", "ESP.GND2", "M1.7", "M2.7", "M3.7"],
+    "5V":       ["IC1.OUT", "C3.+", "ESP.VIN", "MPU.VCC"],
+    "3V3":      ["ESP.3V3", "M1.3", "M2.3", "M3.3"],
+    "VSENSE":   ["ESP.D34", "R3.2", "R2.1", "C2.1"],
+    "BRAKE":    ["ESP.D26", "M1.6", "M2.6", "M3.6"],
+    "SCL":      ["ESP.D22", "MPU.SCL"],
+    "SDA":      ["ESP.D21", "MPU.SDA"],
+    "M1_PWM":   ["ESP.D32", "M1.5"],
+    "M1_DIR":   ["ESP.D4", "M1.4"],
+    "M1_ENC2":  ["ESP.D33", "M1.2"],
+    "M1_ENC1":  ["ESP.D35", "M1.1"],
+    "M2_PWM":   ["ESP.D25", "M2.5"],
+    "M2_DIR":   ["ESP.D15", "M2.4"],
+    "M2_ENC2":  ["ESP.D14", "M2.2"],
+    "M2_ENC1":  ["ESP.D13", "M2.1"],
+    "M3_PWM":   ["ESP.D18", "M3.5"],
+    "M3_DIR":   ["ESP.D5", "M3.4"],
+    "M3_ENC2":  ["ESP.TX2", "M3.2"],
+    "M3_ENC1":  ["ESP.RX2", "M3.1"]
+  }
+}

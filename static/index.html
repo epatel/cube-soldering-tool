@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube solder planner</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Cube solder planner</h1>
+  <div class="group" id="tools">
+    <button data-tool="select" title="Move parts and pins, select links (V)">Move</button>
+    <button data-tool="solder" title="Drag across pads to lay a solder path (S)">Solder</button>
+    <button data-tool="wire" title="Drag for a straight wire, or click point by point (W)">Wire</button>
+    <button data-tool="erase" title="Click a solder path or wire to remove it (E)">Erase</button>
+  </div>
+  <div class="group" id="colors" title="Wire colour"></div>
+  <div class="group">
+    <button id="flip" title="Flip between solder side and component side (F)"></button>
+    <button id="zoomout" title="Zoom out (-)">−</button>
+    <button id="zoomin" title="Zoom in (+)">+</button>
+    <label class="check"><input type="checkbox" id="rats"> Ratsnest</label>
+    <button id="schem" title="Show the schematic picture">Schematic</button>
+  </div>
+  <div class="group">
+    <button id="undo" title="Undo (Ctrl/Cmd+Z)">Undo</button>
+    <button id="redo" title="Redo (Shift+Ctrl/Cmd+Z)">Redo</button>
+    <button id="reset" title="Remove all links and put parts back (can be undone)">Reset</button>
+  </div>
+  <span id="conn" class="off">offline</span>
+</header>
+<main>
+  <section id="stage">
+    <svg id="board" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="schematic" hidden><img src="/pics/schematic.png" alt="Fritzing schematic of the cube electronics"></div>
+  </section>
+  <aside>
+    <div id="summary"></div>
+    <div id="issues"></div>
+    <h2>Schematic nets <small>tick = you verified it against the schematic</small></h2>
+    <ul id="nets"></ul>
+  </aside>
+</main>
+<footer><span id="status"></span><span id="toast"></span></footer>
+<script src="/static/app.js"></script>
+</body>
+</html>
