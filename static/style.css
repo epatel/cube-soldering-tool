@@ -14,7 +14,9 @@ h1 { font-size: 14px; margin: 0 6px 0 0; letter-spacing: .02em; }
 .group { display: flex; align-items: center; gap: 4px; }
 button { background: #262b34; color: var(--text); border: 1px solid var(--line); border-radius: 5px;
   padding: 5px 10px; font: inherit; cursor: pointer; }
-button:hover { border-color: #4a5361; }
+a.button { background: #262b34; color: var(--text); border: 1px solid var(--line); border-radius: 5px;
+  padding: 5px 10px; text-decoration: none; }
+button:hover, a.button:hover { border-color: #4a5361; }
 button:disabled { opacity: .4; cursor: default; }
 button.on { background: var(--accent); border-color: var(--accent); color: #06272a; font-weight: 600; }
 .check { display: flex; align-items: center; gap: 4px; color: var(--dim); padding: 0 6px; }
@@ -55,6 +57,18 @@ aside h2 small { display: block; text-transform: none; letter-spacing: 0; font-w
 footer { display: flex; justify-content: space-between; gap: 20px; padding: 5px 12px; background: var(--panel);
   border-top: 1px solid var(--line); font-size: 12px; color: var(--dim); min-height: 28px; }
 #toast { color: var(--bad); }
+
+/* netlist verifier */
+#schem { display: block; background: #fff; border-radius: 6px; }
+.veil { fill: #fff; opacity: .72; pointer-events: none; }
+.hl-wire { stroke-width: 11; stroke-linecap: round; pointer-events: none; }
+.hl-pin { fill: none; stroke-width: 5; pointer-events: none; }
+.hl-pin.unsure { stroke-dasharray: 7 5; }
+.hl-pin.left-out { stroke: #868e96; stroke-dasharray: 4 4; stroke-width: 3; }
+.hl-label { font: 600 17px ui-monospace, Menlo, monospace; fill: #111; paint-order: stroke; stroke: #fff; stroke-width: 5;
+  pointer-events: none; }
+.pin-hit { fill: transparent; cursor: pointer; }
+.pin-hit:hover { fill: #0002; stroke: #000; stroke-width: 1.5; }
 
 /* board */
 .pcb { fill: var(--pcb); stroke: #06311d; stroke-width: 2; }

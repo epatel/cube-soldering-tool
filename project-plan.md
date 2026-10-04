@@ -23,8 +23,9 @@ that everything that should be joined is joined and nothing else is.
 | 1 | Netlist transcribed from `pics/schematic.png` | done (2026-10-04), awaiting the user's per-net verification |
 | 2 | Server, persistence, websocket, connectivity check with tests | done (2026-10-04) |
 | 3 | Interactive board page: move parts, solder, wire, erase, undo, ratsnest, flip view | done (2026-10-04) |
-| 4 | User verifies all 20 nets against the schematic (tick boxes) | open |
-| 5 | User lays out the real board until `make check` reports 20/20 and 0 shorts | open |
+| 4 | User verifies all 20 nets against the schematic (tick boxes, `/verify` page) | open |
+| 5 | User lays out the real board until `make check` reports 20/20 and 0 shorts | done (2026-10-04): 20/20, 0 shorts |
+| 6 | Netlist verifier page with schematic overlay | done (2026-10-04) |
 
 ## Decisions
 
@@ -40,11 +41,13 @@ that everything that should be joined is joined and nothing else is.
 
 ## Current state
 
-Working end to end. `make start` serves the page; the default layout puts every part on the board
-with no links. Exercised in a browser: wire, solder path, pin drag, short detection, undo, zoom.
-18 unit tests pass. Nothing is committed to git yet.
+Working end to end and committed on `main`. The user's layout is saved in `data/state.json`
+(20/20 nets joined, 0 shorts) with a backup in `data/backups/`. 18 unit tests pass.
+The verifier page at `/verify` is built and committed.
 
-Next: the user verifies the nets (milestone 4), then plans the layout (milestone 5).
+A re-run of the wire trace agrees with the netlist except for the known soft spots (R2.1, ESP.GND2).
+
+Next: the user verifies the nets on `/verify` (milestone 4).
 
 ## Open questions
 

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube netlist verifier</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Netlist verifier</h1>
+  <div class="group">
+    <a class="button" href="/">Solder planner</a>
+  </div>
+  <div class="group">
+    <button id="zoomout" title="Zoom out (-)">−</button>
+    <button id="zoomin" title="Zoom in (+)">+</button>
+    <button id="none" title="Show the plain schematic (Esc)">Clear selection</button>
+  </div>
+  <span id="conn" class="off">offline</span>
+</header>
+<main>
+  <section id="stage">
+    <svg id="schem" xmlns="http://www.w3.org/2000/svg"></svg>
+  </section>
+  <aside>
+    <div id="summary"></div>
+    <div id="issues"></div>
+    <h2>Schematic nets <small>tick = the highlight matches the picture</small></h2>
+    <ul id="nets"></ul>
+  </aside>
+</main>
+<footer><span id="status">Pick a net in the list or click a pin in the picture. ↑ ↓ step through the nets, Space ticks the selected one.</span><span id="toast"></span></footer>
+<script src="/static/verify.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 """Solder planner server: static page + one websocket that carries all state.
 
-    .venv/bin/python server.py            serve on http://127.0.0.1:8765
+    .venv/bin/python server.py            serve on http://127.0.0.1:8765 (planner at /, netlist verifier at /verify)
     .venv/bin/python server.py --check    print the schematic check and exit
 """
 import argparse
@@ -96,6 +96,14 @@ async def index(request):
     return web.FileResponse(ROOT / "static" / "index.html")
 
 
+async def verify(request):
+    return web.FileResponse(ROOT / "static" / "verify.html")
+
+
+async def schematic_map(request):
+    return web.FileResponse(ROOT / "schematic-map.json")
+
+
 @web.middleware
 async def no_cache(request, handler):
     resp = await handler(request)
@@ -107,6 +115,8 @@ def make_app():
     app = web.Application(middlewares=[no_cache])
     app["hub"] = Hub()
     app.router.add_get("/", index)
+    app.router.add_get("/verify", verify)
+    app.router.add_get("/schematic-map.json", schematic_map)
     app.router.add_get("/ws", ws_handler)
     app.router.add_static("/static", ROOT / "static")
     app.router.add_static("/pics", ROOT / "pics")
