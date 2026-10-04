@@ -9,7 +9,9 @@ checks what is joined on the board against the schematic netlist in `netlist.jso
 
 ## Commands
 
+- `make` - numbered menu of every task
 - `make start` - serve on http://127.0.0.1:8765 (planner at `/`, netlist verifier at `/verify`)
+- `make stop` - stop the server; `make open` / `make verify` - open the planner / the verifier in the browser
 - `make test` - unit tests (stdlib `unittest`)
 - `make check` - print the schematic check for the saved board; exit code 1 while nets are open or shorted
 - `make backup` - timestamped copy of `data/state.json` in `data/backups/`

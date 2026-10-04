@@ -1,26 +1,41 @@
 SHELL := bash
 PY := .venv/bin/python
+PORT := 8765
+URL := http://127.0.0.1:$(PORT)
 
 info: menu select
 
 menu:
 	echo "1 make start                - serve the planner on http://127.0.0.1:8765"
-	echo "2 make test                 - run the unit tests"
-	echo "3 make check                - print the schematic check for the saved board"
-	echo "4 make setup                - create .venv and install requirements"
-	echo "5 make backup               - copy data/state.json to data/backups/ with a timestamp"
-	echo "6 make trace                - re-trace pics/schematic.png into schematic-map.json"
-	echo "7 make update_phony         - update .PHONY in Makefile"
+	echo "2 make stop                 - stop the running server"
+	echo "3 make open                 - open the planner in the browser"
+	echo "4 make verify               - open the netlist verifier in the browser"
+	echo "5 make check                - print the schematic check for the saved board"
+	echo "6 make test                 - run the unit tests"
+	echo "7 make backup               - copy data/state.json to data/backups/ with a timestamp"
+	echo "8 make trace                - re-trace pics/schematic.png into schematic-map.json"
+	echo "9 make setup                - create .venv and install requirements"
+	echo "10 make update_phony        - update .PHONY in Makefile"
 
 select:
 	read -p ">>> " P ; make menu | grep "^$$P " | cut -d ' ' -f2-3 | bash
 
 .SILENT:
 
-.PHONY: info menu select start test check setup backup trace update_phony
+.PHONY: info menu select start stop open verify test check setup backup trace update_phony 
 
 start: .venv
-	$(PY) server.py
+	$(PY) server.py --port $(PORT)
+
+stop:
+	pids=$$(lsof -ti tcp:$(PORT) -sTCP:LISTEN); \
+	if [ -n "$$pids" ]; then kill $$pids && echo "stopped server on port $(PORT)"; else echo "no server on port $(PORT)"; fi
+
+open:
+	open $(URL)/
+
+verify:
+	open $(URL)/verify
 
 test: .venv
 	$(PY) -m unittest discover -s tests
@@ -28,9 +43,12 @@ test: .venv
 check: .venv
 	$(PY) server.py --check
 
-setup .venv:
+setup:
 	python3 -m venv .venv
 	.venv/bin/pip install -q -r requirements.txt
+
+.venv:
+	$(MAKE) setup
 
 backup:
 	mkdir -p data/backups
