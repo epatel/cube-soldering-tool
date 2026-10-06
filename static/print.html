@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube solder plan - print</title>
+<style>
+  @page { size: A4 portrait; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #666; color: #111; font: 10pt/1.35 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  nav { position: sticky; top: 0; display: flex; gap: 10px; align-items: center; padding: 8px 14px; background: #1c2027; color: #dfe4ea; z-index: 2; }
+  nav a, nav button { background: #262b34; color: #dfe4ea; border: 1px solid #3a414d; border-radius: 5px; padding: 5px 12px;
+    font: inherit; text-decoration: none; cursor: pointer; }
+  nav span { margin-left: auto; font-size: 9pt; color: #9aa4b1; }
+  .sheet { width: 210mm; min-height: 297mm; margin: 10px auto; padding: 10mm; background: #fff; }
+  .sheet.drawing { height: 297mm; display: flex; flex-direction: column; }
+  .sheet.drawing svg { flex: 1; min-height: 0; width: 100%; }
+  h1 { font-size: 14pt; margin: 0 0 1mm; }
+  h2 { font-size: 11pt; margin: 5mm 0 1.5mm; break-after: avoid; }
+  p.note { margin: 0 0 2mm; font-size: 8.5pt; color: #444; }
+  table { border-collapse: collapse; width: 100%; font-size: 8.5pt; break-inside: auto; }
+  th { text-align: left; border-bottom: 1.5px solid #111; padding: 1px 6px 2px 0; font-weight: 600; }
+  td { border-bottom: 0.5px solid #bbb; padding: 1.5px 6px 1.5px 0; vertical-align: top; }
+  tr { break-inside: avoid; }
+  td.mono, .mono { font-family: ui-monospace, Menlo, monospace; }
+  .cols { columns: 2; column-gap: 8mm; }
+  .cols > div { break-inside: avoid; margin-bottom: 4mm; }
+  .swatch { display: inline-block; width: 9px; height: 9px; border: 0.6px solid #000; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+  .box { display: inline-block; width: 9px; height: 9px; border: 0.8px solid #111; vertical-align: -1px; }
+  .heavy { font-weight: 700; }
+
+  /* drawing */
+  .pcb { fill: #fff; stroke: #222; stroke-width: 1.5; }
+  .mount { fill: #fff; stroke: #222; stroke-width: 1.2; }
+  .pad { fill: #fff; stroke: #9a9a9a; stroke-width: 0.9; }
+  .rail { fill: #ececec; stroke: #9a9a9a; stroke-width: 0.9; }
+  .hole { fill: #c4c4c4; }
+  .silk { fill: #333; font: 9px ui-monospace, Menlo, monospace; text-anchor: middle; dominant-baseline: central; }
+  .solder { fill: none; stroke: #6f7780; stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
+  .solder.heavy { stroke: #15181c; stroke-width: 12; }
+  .solder.far { stroke: #dcdcdc; stroke-width: 8; }
+  .wire-case { fill: none; stroke: #111; stroke-width: 6.5; stroke-linecap: round; stroke-linejoin: round; }
+  .wire { fill: none; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+  .wire-case.heavy { stroke-width: 9.5; }
+  .wire.heavy { stroke-width: 7; }
+  .wire.far { stroke: #8a8a8a; stroke-width: 1.4; stroke-dasharray: 5 4; }
+  .tag { font: 700 9px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; fill: #111;
+    paint-order: stroke; stroke: #fff; stroke-width: 3.5; }
+  .shape { stroke: #222; stroke-width: 1.2; }
+  .shape.far { fill: none; stroke: #b5b5b5; stroke-dasharray: 4 3; }
+  .lead { stroke: #555; stroke-width: 1.6; }
+  .lead.far { stroke: #c2c2c2; }
+  .part-label { font: 600 8.5px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; fill: #111;
+    paint-order: stroke; stroke: #fff; stroke-width: 3; }
+  .part-label.far { fill: #8a8a8a; }
+  .pin { fill: none; stroke: #111; stroke-width: 1.6; }
+  .pin-label { font: 7.5px ui-monospace, Menlo, monospace; fill: #111; dominant-baseline: central;
+    paint-order: stroke; stroke: #fff; stroke-width: 2.5; }
+  .land { stroke: #111; stroke-width: 1.2; }
+  .land.far { fill: none; stroke-width: 1.2; stroke-dasharray: 2 2; }
+
+  @media print {
+    body { background: #fff; }
+    nav { display: none; }
+    .sheet { margin: 0; padding: 0; width: auto; min-height: 0; break-after: page; }
+    .sheet.drawing { height: 276mm; }
+    .sheet:last-child { break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/">Solder planner</a>
+  <button id="print">Print</button>
+  <span id="info">loading…</span>
+</nav>
+<section class="sheet drawing">
+  <h1>Solder side <small>- seen from below, mirrored</small></h1>
+  <p class="note">Dark runs = solder. Black, thicker runs = heavy current: reinforce with bare copper wire. Coloured dots = where each connector wire is soldered. Dashed = on the other side.</p>
+  <svg id="bottom" xmlns="http://www.w3.org/2000/svg"></svg>
+</section>
+<section class="sheet drawing">
+  <h1>Component side <small>- seen from above</small></h1>
+  <p class="note">Components and jumper wires (W1, W2 …, see the list). Thick jumpers = heavy current: use thick wire. Pale grey = solder on the other side.</p>
+  <svg id="top" xmlns="http://www.w3.org/2000/svg"></svg>
+</section>
+<section class="sheet" id="lists"></section>
+<script src="/static/print.js"></script>
+</body>
+</html>

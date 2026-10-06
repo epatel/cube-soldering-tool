@@ -92,6 +92,10 @@ def load_netlist(path):
         for p in pair:
             if p not in known:
                 raise ValueError(f"netlist: internal link uses unknown pin {p}")
+    for pair in nl.get("heavy_paths", []):
+        for p in pair:
+            if p not in known:
+                raise ValueError(f"netlist: heavy path uses unknown pin {p}")
     for pid, part in nl["parts"].items():
         for pn, node in default_pins(part).items():
             if not valid_node(node):
@@ -117,6 +121,39 @@ class _UnionFind:
 
     def union(self, a, b):
         self.parent[self.find(a)] = self.find(b)
+
+
+def heavy_links(netlist, state):
+    """Ids of the solder paths and wires that lie on a high-current path.
+
+    For each pin pair in the netlist's `heavy_paths` this follows the shortest chain of links
+    between the two pins. With no loop in the layout that chain is the only one.
+    """
+    edges = {}
+    for link in state["links"]:
+        path = [key(p) for p in link["path"]]
+        steps = zip(path, path[1:]) if link["type"] == "solder" else [(path[0], path[-1])]
+        for a, b in steps:
+            edges.setdefault(a, []).append((b, link["id"]))
+            edges.setdefault(b, []).append((a, link["id"]))
+    where = {f"{pid}.{pn}": key(node) for pid, part in state["parts"].items() for pn, node in part["pins"].items()}
+    heavy = set()
+    for a, b in netlist.get("heavy_paths", []):
+        start, goal = where.get(a), where.get(b)
+        came = {start: None}
+        queue = [start]
+        for node in queue:
+            if node == goal:
+                break
+            for nxt, link_id in edges.get(node, []):
+                if nxt not in came:
+                    came[nxt] = (node, link_id)
+                    queue.append(nxt)
+        node = goal
+        while came.get(node):
+            node, link_id = came[node]
+            heavy.add(link_id)
+    return sorted(heavy)
 
 
 def check(netlist, state):
@@ -199,6 +236,7 @@ def check(netlist, state):
             gid[root]: {"pins": sorted(pins), "nets": sorted({pin_net[p] for p in pins if p in pin_net})}
             for root, pins in by_root.items()
         },
+        "heavy": heavy_links(netlist, state),
         "summary": {
             "ok": sum(n["status"] == "ok" for n in nets.values()),
             "total": len(nets),

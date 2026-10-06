@@ -80,6 +80,13 @@ class CheckTest(unittest.TestCase):
         self.assertEqual(r["node_group"]["2,2"], r["node_group"]["3,2"])
         self.assertTrue(any("cross diagonally" in w for w in r["warnings"]))
 
+    def test_heavy_links_follow_the_path_between_the_pin_pair(self):
+        self.nl["heavy_paths"] = [["A.1", "B.1"]]
+        self.add("solder", [[1, 1], [2, 1], [3, 1]])   # id 1, on the path
+        self.add("wire", [[3, 1], [5, 1]])             # id 2, on the path
+        self.add("solder", [[3, 1], [3, 2], [3, 3]])   # id 3, a side branch
+        self.assertEqual(self.result()["heavy"], [1, 2])
+
     def test_unused_pin_joined_to_a_net_warns(self):
         self.add("wire", [[9, 9], [1, 1]])
         self.assertTrue(any("X.nc is not in the schematic" in w for w in self.result()["warnings"]))

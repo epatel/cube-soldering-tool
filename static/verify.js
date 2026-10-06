@@ -5,7 +5,7 @@
 
 const NS = 'http://www.w3.org/2000/svg';
 const $ = (s) => document.querySelector(s);
-const svg = $('#schem');
+const svg = $('#overlay');
 const NET_COLORS = { GND: '#00a3a3', VBAT: '#e03131', '5V': '#f76707', '3V3': '#e8a400' };
 const el = (tag, attrs = {}, parent, text) => {
   const e = document.createElementNS(NS, tag);

@@ -31,6 +31,7 @@ crossing diagonals, and internal pin pairs. Each pin then belongs to the group o
 - `shorts`: one entry per group that holds pins of more than one net.
 - `warnings`: diagonal crossings, shared holes, and pins that are not in the schematic but are joined to something.
 - `node_group` and `groups`: group id per node key and the pins/nets per group. The page uses them to light up everything joined to the pad under the pointer.
+- `heavy`: ids of the solder paths and wires on a high-current path (`board.heavy_links`). For each pin pair in the netlist's `heavy_paths` it takes the shortest chain of links between the two pins; internal part links are not followed. If the layout has a loop, only the shortest branch is marked.
 - `summary`: counts for the header.
 
 ## Invariants

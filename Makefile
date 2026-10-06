@@ -10,19 +10,20 @@ menu:
 	echo "2 make stop                 - stop the running server"
 	echo "3 make open                 - open the planner in the browser"
 	echo "4 make verify               - open the netlist verifier in the browser"
-	echo "5 make check                - print the schematic check for the saved board"
-	echo "6 make test                 - run the unit tests"
-	echo "7 make backup               - copy data/state.json to data/backups/ with a timestamp"
-	echo "8 make trace                - re-trace pics/schematic.png into schematic-map.json"
-	echo "9 make setup                - create .venv and install requirements"
-	echo "10 make update_phony        - update .PHONY in Makefile"
+	echo "5 make print                - open the printable sheets in the browser"
+	echo "6 make check                - print the schematic check for the saved board"
+	echo "7 make test                 - run the unit tests"
+	echo "8 make backup               - copy data/state.json to data/backups/ with a timestamp"
+	echo "9 make trace                - re-trace pics/schematic.png into schematic-map.json"
+	echo "10 make setup               - create .venv and install requirements"
+	echo "11 make update_phony        - update .PHONY in Makefile"
 
 select:
 	read -p ">>> " P ; make menu | grep "^$$P " | cut -d ' ' -f2-3 | bash
 
 .SILENT:
 
-.PHONY: info menu select start stop open verify test check setup backup trace update_phony 
+.PHONY: info menu select start stop open verify print test check setup backup trace update_phony 
 
 start: .venv
 	$(PY) server.py --port $(PORT)
@@ -36,6 +37,9 @@ open:
 
 verify:
 	open $(URL)/verify
+
+print:
+	open $(URL)/print
 
 test: .venv
 	$(PY) -m unittest discover -s tests

@@ -26,6 +26,7 @@ that everything that should be joined is joined and nothing else is.
 | 4 | User verifies all 20 nets against the schematic (tick boxes, `/verify` page) | open |
 | 5 | User lays out the real board until `make check` reports 20/20 and 0 shorts | done (2026-10-04): 20/20, 0 shorts |
 | 6 | Netlist verifier page with schematic overlay | done (2026-10-04) |
+| 7 | Print sheets for the bench (`/print`), enlarged to fill A4 | done (2026-10-04), not yet printed on paper |
 
 ## Decisions
 
@@ -37,6 +38,7 @@ that everything that should be joined is joined and nothing else is.
 - 2026-10-04: The buzzer, its transistor Q1 and base resistor R4 are dropped from the board (user's change to the schematic). ESP.D27 is unused.
 - 2026-10-04: Motors and MPU-6050 are drawn as off-board connectors beside the board with coloured wires to their pads (pin 8 red, pin 7 black). Ratsnest is off by default. Resistors are at least 4 holes long, the ceramic at least 2, the electrolytic fixed on a diagonal.
 - 2026-10-04: Connector cables are soldered on the solder side; jumper wires and components are on the component side. Each view fades the far side (user's choice).
+- 2026-10-04: Print sheets are enlarged to fill the page, not 1:1 (user's choice). Connector cables are not drawn on them; each wire's pad is a coloured dot plus a row in the list.
 - 2026-10-04: State is a JSON file with a `version` and a forward-only migration list.
 
 ## Current state

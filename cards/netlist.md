@@ -27,6 +27,7 @@
 - `board.shape_problem` enforces `rigid` and `min_len` for the default layout, for every `move` op, and when a saved state is loaded: a part whose saved pins no longer fit goes back to its default position.
 - A pin is named `PART.PIN`. Part ids must not contain a dot.
 - `internal` lists pins joined inside a part. Both pins are also listed in the net; joining either one satisfies it.
+- `heavy_paths` lists pin pairs with high current between them (battery to each motor's supply and ground pin). The links on the path between each pair are reported as heavy.
 - A pin may be in at most one net. Pins in no net are "not in the schematic"; joining them to anything is a warning.
 
 `board.load_netlist` validates all of this and raises `ValueError` on a bad file. The server

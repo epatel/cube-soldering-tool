@@ -4,6 +4,7 @@
     "Coordinates are [column, row] seen from the COMPONENT side: column 1-18, row 1-24 (A-X).",
     "Row 0 / row 25 are the top / bottom edge pads (columns 2-17). Column 0 / 19 are the side rails.",
     "kind conn = an off-board connector drawn beside the board at 'dock'; 'wires' are its wire colours in pin order. Edit them to match your cable.",
+    "heavy_paths = pin pairs with high current between them (battery to motors). The links on those paths are marked heavy on the print page.",
     "min_len = shortest allowed distance between a two-pin part's pins, in holes. rigid parts keep their footprint shape (any 90 degree rotation).",
     "The buzzer, its transistor Q1 and base resistor R4 from the schematic are left out on purpose. ESP.D27 is unused.",
     "R2.1 sits on VSENSE by circuit logic (voltage divider); the short wire stub in the picture is hard to read."
@@ -48,6 +49,8 @@
              "pins": { "8": [0, 0], "7": [0, 1], "6": [0, 2], "5": [0, 3], "4": [0, 4], "3": [0, 5], "2": [0, 6], "1": [0, 7] } }
   },
   "internal": [["ESP.GND", "ESP.GND2"]],
+  "heavy_paths": [["BAT.+", "M1.8"], ["BAT.+", "M2.8"], ["BAT.+", "M3.8"],
+                  ["BAT.-", "M1.7"], ["BAT.-", "M2.7"], ["BAT.-", "M3.7"]],
   "nets": {
     "VBAT":     ["BAT.+", "IC1.IN", "R3.1", "M1.8", "M2.8", "M3.8"],
     "GND":      ["BAT.-", "IC1.GND", "C3.-", "C2.2", "R2.2", "MPU.GND", "ESP.GND", "ESP.GND2", "M1.7", "M2.7", "M3.7"],
