@@ -10,6 +10,7 @@ checks what is joined on the board against the schematic netlist in `netlist.jso
 ## Commands
 
 - `make` - numbered menu of every task
+- `make setup` - create `.venv` and install `requirements.txt` (the other targets do this on first use)
 - `make start` - serve on http://127.0.0.1:8765 (planner at `/`, netlist verifier at `/verify`, print sheets at `/print`)
 - `make stop` - stop the server; `make open` / `make verify` / `make print` - open the planner / the verifier / the print sheets in the browser
 - `make test` - unit tests (stdlib `unittest`)
