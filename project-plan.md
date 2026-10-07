@@ -43,7 +43,7 @@ that everything that should be joined is joined and nothing else is.
 
 ## Current state
 
-Working end to end and committed on `main`, pushed to the private GitHub repo
+Working end to end and committed on `main`, pushed to the public GitHub repo
 `epatel/cube-soldering-tool`. The user's layout is saved in `data/state.json`
 (20/20 nets joined, 0 shorts) with a backup in `data/backups/`. 19 unit tests pass.
 The verifier page at `/verify` is built and committed.
